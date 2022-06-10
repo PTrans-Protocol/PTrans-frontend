@@ -1,0 +1,10 @@
+@keyframes anim {
+    0% {opacity: 20%;}
+    50% {opacity: 5%;}
+    100% {opacity: 20%;}
+}
+.bg{
+    animation-name: anim;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
