@@ -10,24 +10,22 @@ export default function DepositWithdraw(){
         setTab(newValue)
     } 
     return (
-        <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        width="100%"
-        >
+
         <Box 
         width="100%"
+        height="100%"
         display="flex"
+        justifyContent="space-around"
         flexDirection="column"
         alignItems="center"
+        boxSizing="border-box"
+        minHeight="90vh"
         >
-            <Box component="nav" aria-label="global navigation" sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 , my: 5}}>
+            <Box sx={{ display: 'flex', alignItems: 'center'}}>
             <img
               src={"logo192.png"}
               alt="N3T.rs logo"
-              width={50}
+              width="50rem"
               style={{ display: 'block' }}
               className="rot"
             />
@@ -43,12 +41,12 @@ export default function DepositWithdraw(){
             <Box 
             sx={{
                 width:{md: '50%', sm: '80%', xs: '100%'},
-                maxWidth: '800px',
+                //maxWidth: '800px',
                 borderRadius: '10px',
                 boxSizing: 'border-box',
-                mt: 3,
                 px: 3,
                 py: 3,
+                
                 bgcolor: 'background.paper',
                 border: "2px solid #1C8CF3",
                 boxShadow: "0px 10px 10px #1C8CF3"
@@ -58,17 +56,19 @@ export default function DepositWithdraw(){
                 width: "100%",
                 display: "flex",
                 justifyContent: "center",
-                mb: 2
             }}>
             <Tabs
                 value={tab}
                 onChange={handleToggleTab}
+                sx={{
+                    mb: '1rem'
+                }}
             >
                 <Tab
                     value={0}
                     label="Deposit"
                     style={{
-                        fontSize: '20px',
+                        fontSize: '1.2rem',
                         
                     }}
                 />
@@ -76,7 +76,7 @@ export default function DepositWithdraw(){
                     value={1}
                     label="Withdraw"
                     style={{
-                        fontSize: '20px',
+                        fontSize: '1.2rem',
                         marginLeft: 20
                     }}
                 />
@@ -84,9 +84,7 @@ export default function DepositWithdraw(){
             </Box>
             {tab === 0 ? <Deposit/> : <Withdraw/>}
             </Box>
-            <Typography sx={{mt: {md: 10, sm: 5, xs: 5}, fontSize: {md: "25px", sm: "20px", xs: "15px"}, fontFamily: "'Orbitron', sans-serif"}}>ORAICHAIN Hackathon 2022!</Typography>
-        </Box>
-
+            <Typography sx={{ fontSize: {md: "25px", sm: "20px", xs: "15px"}, fontFamily: "'Orbitron', sans-serif"}}>ORAICHAIN Hackathon 2022!</Typography>
         </Box>
     )
 }

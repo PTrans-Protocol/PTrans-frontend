@@ -47,9 +47,12 @@ export async function loadKeplrWallet(keplrConfig: KeplrConfig): Promise<Offline
     return anyWindow.getOfflineSigner(keplrConfig.chainId)
 }
 
-export function getKeplrSigner(keplrConfig: KeplrConfig) : OfflineSigner{
+export function getKeplrSigner(keplrConfig: KeplrConfig) : OfflineSigner | undefined{
     const anyWindow: any = window;
-    return anyWindow.getOfflineSigner(keplrConfig.chainId)
+    if (anyWindow.getOfflineSigner){
+        return anyWindow.getOfflineSigner(keplrConfig.chainId)
+    }
+    else return;
 }
 
 export async function createClient(config: AppConfig, signer: OfflineSigner): Promise<SigningCosmWasmClient>{

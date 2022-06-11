@@ -8,6 +8,7 @@ const MainContentWrapper = styled('div')(({ theme }) => ({
     padding: theme.spacing(5, 2, 9, 2),
     marginLeft: 0,
     height: '100%',
+    width: '100%',
     transition: 'margin-left 300ms ease',
     [theme.breakpoints.up('xsm')]: {
       padding: theme.spacing(5, 4, 5, 4),
@@ -25,24 +26,24 @@ interface Props{
 export default function MainLayout(props: Props) {
     const {children} = props
     return <div 
-    
-    
-    >
-      <div
+    className="d"
+    style={{
+      position: 'relative',
+      width: '100%'
+    }}>
+      <img
       className="bg"
       style={{ 
         backgroundImage: `url(${background})`, 
         backgroundRepeat: "no-repeat", 
         backgroundSize: "cover", 
-        height: '100vh',
-        width: '100vw',
-        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        position: "absolute",
         zIndex: -5,
         opacity: 0.5
       }}
-      >
-
-      </div>
+      />
         <Header/>
         <MainContentWrapper>{children}</MainContentWrapper>
     </div>
