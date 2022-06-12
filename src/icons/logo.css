@@ -1,0 +1,12 @@
+.cls-1{
+    fill: #1C8CF3;
+}
+@keyframes shadow {
+    0% {transform: scale(1);}
+    50% {transform: scale(5);}
+    100% {transform: scale(1);}}
+circle.cls-1{
+    animation-name: shadow;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}

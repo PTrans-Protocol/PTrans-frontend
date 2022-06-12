@@ -7,6 +7,7 @@ import TooltipInfo from "src/components/TooltipInfo";
 import { deposit } from "src/zk";
 import BootstrapDialogTitle from "src/components/primitives/BootstrapDialogTitle";
 import { getTokenList } from "src/config/tokens";
+import { PTrans } from "src/contracts/interfaces/ptrans";
 
 const CustomStepIconRoot = styled('div')<{
     ownerState: { completed?: boolean; active?: boolean };
@@ -65,13 +66,28 @@ export default function Deposit(){
     const handleChangeToken = (event: SelectChangeEvent) => {
         setTokenIdx(parseInt(event.target.value))
     }
+    const sdk = useSdk();
+    console.log(sdk)
     const [step, setStep] = useState<number>(0)
+    const [txLink, setTxLink] = useState<string>("")
     
     const [depositStep, setDepositStep] = useState<'none'|'processing'|'done'|'fail'>('none');
+    
+    
     const handleDeposit = async() => {
+      const reader = sdk.getReader();
+      const sender = sdk.getSender();
+      const address = sdk.address;
+      const ptrans = PTrans(reader, sender, address).use(tokenList[tokenIdx].addresses[step])
       setDepositStep('processing')
-      await deposit(tokenList[tokenIdx].name, tokenList[tokenIdx].amounts[step])
-      setDepositStep('done')
+      const txHashLink = await deposit(tokenList[tokenIdx].name, tokenList[tokenIdx].amounts[step], ptrans)
+      if(!txHashLink) {
+        setDepositStep('fail')
+      }
+      else{
+        setDepositStep('done')
+        setTxLink(txHashLink)
+      }
     }
     const {initialized, address} = useSdk()
     return (
@@ -133,6 +149,22 @@ export default function Deposit(){
               <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <Typography variant="h6">Your note has been downloaded as a text file.</Typography>
                 <Typography variant="h6" sx={{color: "red", mt: 2}}>Please keep your note secret and use it to withdraw money.</Typography>
+                <Box width="100%" display="flex" justifyContent="center" mt={2}>
+                  <a style={{
+                    textDecorationLine: "underline"
+                  }} href={txLink} target="blank">
+                    View Transaction
+                  </a>
+                </Box>
+              </Box>
+              </DialogContent>
+            </Dialog>    
+            <Dialog open={depositStep === 'fail'} PaperProps={{ elevation: 0, sx: { maxWidth: 600 } }} fullWidth>
+              <BootstrapDialogTitle onClose={() => setDepositStep('none')}>Deposit Failed</BootstrapDialogTitle>
+
+              <DialogContent>
+              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <Typography variant="h6" sx={{color: "red"}}>Something went wrong with your transaction.</Typography>
               </Box>
               </DialogContent>
             </Dialog>    

@@ -8,7 +8,6 @@ module.exports = function override(config) {
       crypto: require.resolve("crypto-browserify"),
       os: require.resolve("os-browserify/browser"),
       assert: require.resolve("assert/"),
-      fs: false
     };
     config.plugins.push(
       new webpack.ProvidePlugin({

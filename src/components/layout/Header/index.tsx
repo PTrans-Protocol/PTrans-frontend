@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import ToggleThemeButton from 'src/components/ToggleThemeButton';
 import { WalletButton } from 'src/components/WalletButton';
+import { LogoIcon } from 'src/icons';
 
 export default function Header() {
 
@@ -24,12 +25,10 @@ export default function Header() {
     >
       <Box sx={{ height: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box component="nav" aria-label="global navigation" sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <img
-              src={"logo192.png"}
-              alt="N3T.rs logo"
-              width={30}
-              style={{ display: 'block' }}
-            />
+            <LogoIcon style={{
+              width: 30,
+              height: 30
+            }}/>
 
             <Typography variant='h4' sx={{
                 ml: 1

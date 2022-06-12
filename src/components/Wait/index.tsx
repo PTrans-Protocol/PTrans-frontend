@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import React from "react";
+import { LogoIcon } from "src/icons";
 
 export default function Wait(){
     return(
@@ -14,12 +15,12 @@ export default function Wait(){
             display="flex"
             alignItems="center"
             >
-            <img
-              src={"logo192.png"}
-              alt="N3T.rs logo"
-              width={50}
-              style={{ marginRight: "5px" }}
-              className="rot"
+            <LogoIcon style={{
+                width: 100,
+                height: 100,
+                marginRight: 5
+            }}
+            
             />
             <p style={{fontFamily: "'Orbitron', sans-serif", fontSize: "2rem"}}>
             

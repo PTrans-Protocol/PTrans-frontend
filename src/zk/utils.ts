@@ -25,9 +25,9 @@ interface DepositProps{
     secret?: bigint,
     preimage?: Buffer,
     commitment?: Buffer,
-    commitmentHex?: string,
+    commitmentString?: string,
     nullifierHash?: Buffer,
-    nullifierHex?: string 
+    nullifierString?: string 
 }
 export async function createDeposit(nullifier: bigint, secret: bigint) : Promise<DepositProps>{
     let deposit: DepositProps = {};
@@ -37,19 +37,23 @@ export async function createDeposit(nullifier: bigint, secret: bigint) : Promise
     const secretBuf = toBufferLE(secret, 31);
     deposit.preimage = Buffer.concat([nullifierBuf , secretBuf])
     deposit.commitment = await pedersenHash(deposit.preimage)
-    deposit.commitmentHex = deposit.commitment.toString('hex')
+    deposit.commitmentString = toBigIntLE(deposit.commitment).toString()
     deposit.nullifierHash = await pedersenHash(nullifierBuf)
-    deposit.nullifierHex = deposit.nullifierHash.toString('hex')
+    deposit.nullifierString = toBigIntLE(deposit.nullifierHash).toString()
     return deposit;
 }
-
+export async function hashMiMc(left: any, right: any) {
+    const mimc = await buildMimcSponge()
+    const {xL, xR} = mimc.hash( left, right, 0);
+    return [toBigIntLE(Buffer.from(xL)), toBigIntLE(Buffer.from(xR))];
+}
 export async function getMerkleProofFromCommitments(commitments: Array<string>, leafIndex: number){
     const mimc = await buildMimcSponge()
     const hashFunction = (left: string | number, right: string | number): string =>{
         const {xL, xR} = mimc.hash( BigInt('0x' + left), BigInt('0x' + right), 0);
         return Buffer.from(xL).toString('hex');
     }
-    const tree = new MerkleTree(30, commitments, {hashFunction: hashFunction, zeroElement: 0})
+    const tree = new MerkleTree(20, commitments, {hashFunction: hashFunction, zeroElement: 0})
     const {pathElements, pathIndices} = tree.path(leafIndex)
     return {pathElements, pathIndices, root: tree.root}
 }
