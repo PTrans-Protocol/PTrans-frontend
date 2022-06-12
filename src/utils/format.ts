@@ -1,3 +1,4 @@
+import { toBigIntLE, toBufferLE } from 'bigint-buffer';
 import {config} from 'src/config/chains/config'
 import { getTokenList, TokenConfig } from 'src/config/tokens';
 
@@ -38,10 +39,10 @@ export function validateAndExtractNote(note: string) : {tokenConfig: TokenConfig
   const tokenList = getTokenList();
   const tokenConfig = tokenList.find(element => element.name === infos[0] && parseInt(infos[1]) in element.amounts)
   if (!tokenConfig) return undefined;
-  const preimageHex = infos[2]
-  const preimage = Buffer.from(preimageHex, 'hex')
+  const preimageString = infos[2]
+  const preimage = toBufferLE(BigInt(preimageString), 62)
   if (preimage.length !== 62) return undefined;
-  const nullifier = BigInt('0x' + preimage.slice(0, 31).toString('hex'))
-  const secret = BigInt('0x' + preimage.slice(31, 62).toString('hex'))
+  const nullifier = toBigIntLE(preimage.slice(0, 31))
+  const secret = toBigIntLE(preimage.slice(31, 62))
   return {tokenConfig, nullifier, secret}
 }

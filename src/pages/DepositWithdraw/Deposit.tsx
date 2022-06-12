@@ -8,6 +8,7 @@ import { deposit } from "src/zk";
 import BootstrapDialogTitle from "src/components/primitives/BootstrapDialogTitle";
 import { getTokenList } from "src/config/tokens";
 import { PTrans } from "src/contracts/interfaces/ptrans";
+import { config } from "src/config/chains/config";
 
 const CustomStepIconRoot = styled('div')<{
     ownerState: { completed?: boolean; active?: boolean };
@@ -70,6 +71,7 @@ export default function Deposit(){
     console.log(sdk)
     const [step, setStep] = useState<number>(0)
     const [txLink, setTxLink] = useState<string>("")
+    const [error, setError] = useState<string>("")
     
     const [depositStep, setDepositStep] = useState<'none'|'processing'|'done'|'fail'>('none');
     
@@ -80,13 +82,14 @@ export default function Deposit(){
       const address = sdk.address;
       const ptrans = PTrans(reader, sender, address).use(tokenList[tokenIdx].addresses[step])
       setDepositStep('processing')
-      const txHashLink = await deposit(tokenList[tokenIdx].name, tokenList[tokenIdx].amounts[step], ptrans)
-      if(!txHashLink) {
+      const res = await deposit(tokenList[tokenIdx].name, tokenList[tokenIdx].decimals, tokenList[tokenIdx].amounts[step], ptrans)
+      if(res.error) {
         setDepositStep('fail')
+        setError(res.error)
       }
       else{
         setDepositStep('done')
-        setTxLink(txHashLink)
+        setTxLink(  config.explorerUrl ? config.explorerUrl + "/txs/" + res.txHash : "")
       }
     }
     const {initialized, address} = useSdk()
@@ -152,6 +155,7 @@ export default function Deposit(){
                 <Box width="100%" display="flex" justifyContent="center" mt={2}>
                   <a style={{
                     textDecorationLine: "underline"
+                    
                   }} href={txLink} target="blank">
                     View Transaction
                   </a>
@@ -164,7 +168,7 @@ export default function Deposit(){
 
               <DialogContent>
               <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <Typography variant="h6" sx={{color: "red"}}>Something went wrong with your transaction.</Typography>
+                <Typography variant="h6" sx={{color: "red"}}>Message: {error}</Typography>
               </Box>
               </DialogContent>
             </Dialog>    

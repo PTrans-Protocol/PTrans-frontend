@@ -1,5 +1,6 @@
 export interface TokenConfig {
   readonly name: string;
+  readonly decimals: number;
   readonly amounts: Array<number>;
   readonly addresses: Array<string>;
 }
@@ -7,6 +8,7 @@ export interface TokenConfig {
 const oraitestnet: Array<TokenConfig> = [
   {
     name: "ORAI",
+    decimals: 6,
     amounts: [0.1, 0.2, 0.5, 1],
     addresses: [
       "orai1wqrav3a604vutg8gxrnmm2w4jkq3ujrnd9cxlp",

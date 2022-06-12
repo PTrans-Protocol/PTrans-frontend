@@ -9,6 +9,11 @@ export interface GetLastRootResponse {
     readonly last_root: string
 }
 
+export interface ExecuteResponse{
+    readonly txHash?: string;
+    readonly error?: string;
+}
+
 export interface PTransInstance {
     readonly contractAddress: string;
 
@@ -17,7 +22,7 @@ export interface PTransInstance {
     get_last_root: () => Promise<GetLastRootResponse>;
 
     // actions
-    deposit_msg: (commitment: string, amount: string, denom: string) => Promise<string | undefined>;
+    deposit_msg: (commitment: string, amount: string, denom: string) => Promise<ExecuteResponse>;
 }
 
 export interface PTransContract{
@@ -38,25 +43,23 @@ export const PTrans = (reader: CosmWasmClient, sender?: SigningCosmWasmClient, a
                 get_last_root:{}
             })
         }
-        const deposit_msg = async (commitment: string, amount: string, denom: string): Promise<string | undefined> => {
-            if (!address || !sender) return;
+        const deposit_msg = async (commitment: string, amount: string, denom: string): Promise<ExecuteResponse> => {
+            if (!address || !sender) return {
+                error: "Address or sender not found"
+            };
+            
             try{
             const result = await sender.execute(address, contractAddress, {
                 deposit_msg:{
                     commitment: commitment
                 },
             }, undefined, [{
-                denom: denom,
+                denom: denom.toLowerCase(),
                 amount: amount
             }])
-            // .execute(contractAddress, {
-            //     deposit_msg: {
-            //         commitment
-            //     }
-            // })
-            return result.transactionHash
+            return {txHash: result.transactionHash}
             }catch(err){
-                console.log(err);
+                return {error: (err as Error).message}
             }
         }
         return {
